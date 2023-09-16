@@ -2,33 +2,33 @@
 
 Project:
 
-This is a project to generate a colour scheme based off of a picture. The image picture should come from a png or jpg
-format, and thus a parser should be created that can read these formats.
+This is a project to generate a colour scheme, with colors extracted from an image. The image should come from a png or jpg
+format, and thus a parser has to be created that can read these formats.
 
 Why?
 
-  * For me I wanted to reimplement the algorithms used to generate a color palete for fun. It seems that the literatre 
-  uses K means clustering, however I wanted to try out different ways as wekk.
+  * For me I wanted to re-implement the algorithms used for color extraction. It seems that the literature 
+  uses K means clustering, however I wanted to implement otherways as well.
 
-  * I also wanted to learn how to process pixel data from images. Parsing low level image data sounds fun.
+  * I also wanted to learn how to parse low level pixel data from images. 
 
   * Another reason is to learn how to use git and github more effectively. I want to familiarise myself with git /
     github more.
 
+  * Furthermore, I want to get better at my favourite language C++.
+
 How?
   
-  * First do a research paper survey of results
+  * First do a research paper survey of results.
 
-  * Then do a survey of techniques
+  * Then do a survey of techniques.
 
   * Read up on image formats - .png, .jpg ect.
 
-  * Implement the techniques incrementally
-
-  * Use C++!
+  * Implement the techniques incrementally.
 
 Road Map:
 
-  * Write a parser to read image file data.
-
   * Write a program for K means clustering.
+
+  * Write a parser to read image file data.
