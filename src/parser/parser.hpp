@@ -12,24 +12,23 @@
 
 class PNG_Parser{
   std::ifstream ifst{nullptr};
-  std::vector<std::uint8_t> file;
-  // ===================================================================== //
+  std::vector<char> file;
+
   // constants associated with PNG files
+
   const unsigned HEADER_SIZE{8};
-  // ===================================================================== //
-  
 
   public:
   PNG_Parser() = default;
   void ReadData();
   void PrintData(std::ostream& ost) const;
   std::array<std::uint8_t, 8> GetHeader() const;
+  std::vector<std::uint8_t> GetFirstChunk() const;
   
-  // ===================================================================== //
   // FOR DEBUGGING PURPOSES ONLY
 
   void SetFile(std::string& file_name){
-    ifst.open(file_name, std::ios::in);
+    ifst.open(file_name, std::ios::binary | std::ios::ate);
     if(ifst.rdstate() == std::ios_base::badbit){
       std::cout << "ERROR_OCCURED_IN_READING_FILE::state_is_badbit" << '\n';
     }
@@ -46,7 +45,6 @@ class PNG_Parser{
     SetFile(file_name);
   }
 
-  // ===================================================================== //
 };
 
 #endif

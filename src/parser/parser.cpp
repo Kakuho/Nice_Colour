@@ -1,23 +1,23 @@
 #include "parser.hpp"
 
 void PNG_Parser::ReadData(){
-  // need to read binary data into my program from the png file
-  uint8_t ch;
-  while(ifst >> ch){
-    file.push_back(ch);
-  }
+  std::size_t number_of_bytes = ifst.tellg();
+  ifst.seekg(0);
+  file.resize(number_of_bytes);
+  ifst.read(file.data(), number_of_bytes);
 }
 
 void PNG_Parser::PrintData(std::ostream& ost) const{
+  // function useful for debugging, produces a hexdump
   for(std::size_t i = 0; i < file.size(); i++){
-    if(i%16 == 0){
-      ost << '\n';
-    }
     if(i % 4 == 0){
       ost << '\t';
     }
+    if(i % 16 == 0){
+      ost << '\n';
+    }
     ost << std::hex << std::setw(2) << std::setfill('0')
-        << (static_cast<int>(file[i]) & 0xFF) << ", ";
+        << (static_cast<unsigned int>(file[i]) & 0xFF) << ", ";
   }
   ost << '\n';
 }
@@ -30,11 +30,30 @@ std::array<std::uint8_t, 8> PNG_Parser::GetHeader() const{
   return header;
 }
 
+std::vector<std::uint8_t> PNG_Parser::GetFirstChunk() const{
+  // A png chunk looks consists of the following parts:
+  // chunk = Length + chunktype + chunkdata + CRC
+  // The total lenght of the chunk is as such:
+  // 4 from Length
+  // 4 from chunktype
+  // 4 from chunkdata
+  // 4 from CRC
+  const int start{8}; 
+  std::uint32_t length{
+    file[start]     << 12  |
+    file[start + 1] << 8   |
+    file[start + 2] << 4   |
+    file[start + 3]
+  };
+  std::size_t length_of_chunk{ 4 + 4 + length + 4 };
+  // I use a std::vector because I dont know what lenght the vector will be (length segment is 
+  // dependent on which png file is being parsed)
+  std::vector<std::uint8_t> chunk;
+  for(int i = 0; i < length_of_chunk; i++){
+    chunk.push_back( file[i + start] );
+  }
+  return chunk;
+}
 
-
-// ===================================================================== //
 // DEBUGGING FUNCTIONS
-
-
-// ===================================================================== //
 
