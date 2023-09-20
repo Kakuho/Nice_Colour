@@ -27,6 +27,7 @@ void test_read(){
 void test_header(){
   // headers must have the following!
   // 89 50 4E 47 0D 0A 1A 0A
+
   PNG_Parser pp;
   pp.SetFile("./../../assets/vaporeon.png");
   pp.ReadData();
@@ -35,13 +36,21 @@ void test_header(){
   assert(header[1] == 0x50);
   assert(header[2] == 0x4E);
   assert(header[3] == 0x47);
-  std::cout << std::hex << (static_cast<unsigned>(header[4]) & 0xFF) << '\n';
   assert(header[4] == 0x0D);
   assert(header[5] == 0x0A);
   assert(header[6] == 0x1A);
   assert(header[7] == 0x0A);
+  std::cout << "Header read successfully :D" << '\n';
+}
+
+void test_chunk_header_decode(){
+  PNG_Parser pp;
+  // Example is cHNK = 0x63, 0x48, 0x4E, 0x6B
+  pp.SetChunk(std::vector<char>{0x63, 0x48, 0x4E, 0x6B});
+  ChunkTypeI sample1{1, 0, 0, 1};
+  assert(pp.DecodeChunkType() == sample1);
 }
 
 int main(){
-  test_read();
+  test_chunk_header_decode();
 }

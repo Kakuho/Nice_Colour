@@ -1,5 +1,21 @@
 #include "parser.hpp"
 
+// For ChunkTypeI
+
+bool ChunkTypeI::operator==(ChunkTypeI& rhs){
+  if( ancillary_bit == rhs.ancillary_bit
+      && private_bit == rhs.private_bit
+      && reserved_bit == rhs.reserved_bit
+      && safe_to_copy_bit == rhs.safe_to_copy_bit){
+    return true;
+  }
+  else{
+    return false;
+  }
+}
+
+// ===================================================================== //
+
 void PNG_Parser::ReadData(){
   std::size_t number_of_bytes = ifst.tellg();
   ifst.seekg(0);
@@ -31,6 +47,7 @@ std::array<std::uint8_t, 8> PNG_Parser::GetHeader() const{
 }
 
 std::vector<std::uint8_t> PNG_Parser::GetFirstChunk() const{
+  // 5.3 https://www.w3.org/TR/png-3/#5Introduction
   // A png chunk looks consists of the following parts:
   // chunk = Length + chunktype + chunkdata + CRC
   // The total lenght of the chunk is as such:
@@ -53,6 +70,25 @@ std::vector<std::uint8_t> PNG_Parser::GetFirstChunk() const{
     chunk.push_back( file[i + start] );
   }
   return chunk;
+}
+
+ChunkTypeI PNG_Parser::DecodeChunkType() const{
+  if(chunk.empty()){
+    std::cout << "ERROR_NO_CHUNK_LOADED" << '\n';
+  }
+  else{
+    // the least significant bit is bit 0. So a mask of 0b0010'0000 is suitable for all chunks.
+    // types are determined by bit 5 of the resepective byte in the chunk header 
+    // (thus there is 4 bits, as in ChunkTypeI
+    std::uint8_t mask = 0b0010'0000;
+    ChunkTypeI buffer{
+      chunk[0] & mask,
+      chunk[1] & mask,
+      chunk[2] & mask,
+      chunk[3] & mask,
+    };
+    return buffer;
+  }
 }
 
 // DEBUGGING FUNCTIONS
